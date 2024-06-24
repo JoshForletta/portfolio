@@ -23,7 +23,7 @@ jobs:
         run: cargo install --git https://github.com/Dioxuslabs/dioxus dioxus-cli --tag=v0.4.3
       - name: Build portfolio
         shell: bash
-        run: cd portfolio && dx build --release
+        run: dx build --release
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3.0.1
         with:
