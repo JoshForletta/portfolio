@@ -98,16 +98,22 @@ where
 #[derive(Props)]
 pub struct CanvasProps<'a> {
     id: &'a str,
+    width: &'a str,
+    height: &'a str,
 }
 
 pub fn Canvas<'a, T: Clone + 'static>(cx: Scope<'a, CanvasProps>) -> Element<'a> {
     let event_coroutine = use_coroutine_handle::<CanvasEvent<T>>(cx).unwrap();
 
-    let CanvasProps { id } = *cx.props;
+    let CanvasProps {
+        id, width, height, ..
+    } = *cx.props;
 
     cx.render(rsx! {
         canvas {
             id: id,
+            width: width,
+            height: height,
             onmounted: move |mounted_event| {
                 let canvas = web_sys::window()
                     .and_then(|window| window.document())
