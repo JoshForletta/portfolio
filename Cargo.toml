@@ -11,7 +11,7 @@ futures-util = "0.3.30"
 log = "0.4.20"
 tokio = { version = "1.35.1", features = ["sync", "time"] }
 sdf = { git = "https://github.com/JoshForletta/sdf.git" }
-wasm-bindgen = "0.2.90"
+wasm-bindgen = "0.2.92"
 web-sys = { version = "0.3.67", features = ["DomRectReadOnly", "ResizeObserver", "ResizeObserverEntry"] }
 wasmtimer = "0.2.0"
 wgpu = { version = "0.19.0", features = ["webgl"] }
