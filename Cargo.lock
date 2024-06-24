@@ -1351,6 +1351,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "sdf"
 version = "0.1.0"
+source = "git+https://github.com/JoshForletta/sdf.git#2e8d27988da1c5c200a2fc73565bebfea3d6337c"
 dependencies = [
  "bytemuck",
  "cgmath",
