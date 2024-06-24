@@ -1,11 +1,19 @@
 #![allow(non_snake_case)]
 
+use std::time::Duration;
+
 use dioxus::prelude::*;
 use portfolio::canvas::{use_canvas_coroutine, Canvas, CanvasEvent};
 use sdf::{
     rectangle::{Rectangle, RectangleRenderer},
     Device,
 };
+use wasmtimer::tokio::sleep;
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum RectangleEvent {
+    SetPhase(f32),
+}
 
 fn main() {
     dioxus_logger::init(log::LevelFilter::Info).expect("failed to init logger");
@@ -32,29 +40,42 @@ fn App(cx: Scope) -> Element {
             rectangle,
         );
 
-        Some(move |event: CanvasEvent<()>| match event {
+        Some(move |event: CanvasEvent<RectangleEvent>| match event {
             CanvasEvent::Init { .. } => renderer.render().unwrap(),
             CanvasEvent::Resized { width, height } => renderer.resize(width, height),
-            CanvasEvent::UserEvent(_) => (),
+            CanvasEvent::UserEvent(RectangleEvent::SetPhase(phase)) => {
+                renderer.set_phase(phase);
+                renderer.render().unwrap()
+            }
         })
     });
 
+    let tick = use_coroutine(cx, |mut exit: UnboundedReceiver<()>| async move {
+        let mut phase = 0.0;
+
+        loop {
+            if exit.try_next().is_ok() {
+                break;
+            }
+
+            sleep(Duration::from_millis(20)).await;
+
+            phase += 0.1;
+            canvas_coroutine.send(CanvasEvent::UserEvent(RectangleEvent::SetPhase(phase)));
+        }
+    });
+
     cx.render(rsx! {
-        Canvas::<()> {
+        Canvas::<RectangleEvent> {
             id: "teeheee",
             width: "340",
             height: "280",
         }
-        // button {
-        //     onclick: move |_| {
-        //         canvas_coroutine.send(CanvasEvent::UserEvent(ExampleEvent::InsertRect(Rectangle {
-        //         position: Vector([150.0, 75.0]),
-        //         size: Vector([75.0, 48.5]),
-        //         z_index: 0,
-        //         corner_radii: Vector([48.4, 24.25, 12.125, 0.0]),
-        //         color: Vector([0.8, 0.2, 0.1, 1.0]),
-        //     })))},
-        //     "add rectangle",
-        // }
+        button {
+            onclick: move |_| {
+                tick.send(())
+            },
+            "stop",
+        }
     })
 }
