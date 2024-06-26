@@ -22,7 +22,7 @@ jobs:
           override: true
       - name: Install CLI
         shell: bash
-        run: cargo install --git https://github.com/Dioxuslabs/dioxus dioxus-cli --tag=v0.4.3
+        run: cargo install --git https://github.com/JoshForletta/dioxus dioxus-cli --branch removed-leading-slash-from-imports-in-html-templates
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5.0.0
       - name: Build portfolio
